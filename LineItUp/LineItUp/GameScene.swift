@@ -76,25 +76,8 @@ class GameScene: SKScene {
 //            n.strokeColor = SKColor.red
 //            self.addChild(n)
 //        }
-        
-        
     }
-//
-//    func touchMoved(toPoint pos : CGPoint) {
-//        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-//            n.position = pos
-//            n.strokeColor = SKColor.blue
-//            self.addChild(n)
-//        }
-//    }
-//
-//    func touchUp(atPoint pos : CGPoint) {
-//        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-//            n.position = pos
-//            n.strokeColor = SKColor.red
-//            self.addChild(n)
-//        }
-//    }
+
     // Needed -------
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 //        if let label = self.label {
@@ -105,12 +88,11 @@ class GameScene: SKScene {
         insideArrow.removeAction(forKey: "rotateArrow")
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
-    }
+
     // Needed ------
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         //for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+        print("----------------- touch ended --------------")
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -123,19 +105,19 @@ class GameScene: SKScene {
     }
 }
 
-//extension GameScene: SKPhysicsContactDelegate {
-//
-//    func didBegin(_ contact: SKPhysicsContact) {
-//        if contact.bodyA.node?.name == "coin" || contact.bodyB.node?.name == "coin" {
-//            if contact.bodyA.node == outsideArrow {
-//                contact.bodyB.node?.removeFromParent()
-//            } else {
-//                contact.bodyA.node?.removeFromParent()
-//            }
-//            run(sndCollect)
-//            score += 1
-//        } else if contact.bodyA.node?.name == "pillar" || contact.bodyB.node?.name == "pillar" {
-//            stopGame()
-//        }
-//    }
-//}
+extension GameScene: SKPhysicsContactDelegate {
+
+    func didBegin(_ contact: SKPhysicsContact) {
+        if contact.bodyA.node?.name == "coin" || contact.bodyB.node?.name == "coin" {
+            if contact.bodyA.node == outsideArrow {
+                contact.bodyB.node?.removeFromParent()
+            } else {
+                contact.bodyA.node?.removeFromParent()
+            }
+            //run(sndCollect)          // Add ding soundtrack
+            score += 1
+        } else if contact.bodyA.node?.name == "pillar" || contact.bodyB.node?.name == "pillar" {
+            stopGame()
+        }
+    }
+}
