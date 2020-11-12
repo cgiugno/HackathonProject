@@ -5,5 +5,4 @@
 Line-it-up is a game that tasks players with stopping a spinning pin placed on a red disk with the correct alignment pin placed 
 above the disk at 90 degrees. 
 
-
-
+Graphic assets downloaded from www.flaticon.com and editted 
