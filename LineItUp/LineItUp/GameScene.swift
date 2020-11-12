@@ -13,38 +13,53 @@ class GameScene: SKScene {
     
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
-    let squareNode = SKNode()
     let circleNode = SKShapeNode(circleOfRadius: 350)
-    let outsideArrow = SKSpriteNode(imageNamed: "clockPointer.png")
+    
+    var insideArrow = SKSpriteNode()
+    var outsideArrow = SKSpriteNode()
     
     override func didMove(to view: SKView) {
 
-//        // Get label node from scene and store it for use later
-//        self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
-//        if let label = self.label {
-//            label.alpha = 0.0
-//            label.run(SKAction.fadeIn(withDuration: 2.0))
-//        }
-//
-//        // Create shape node to use during mouse interaction
-//        let w = (self.size.width + self.size.height) * 0.05
-//        self.spinnyNode = SKShapeNode.init(rectOf: CGSize.init(width: w, height: w), cornerRadius: w * 0.3)
-//
-//        if let spinnyNode = self.spinnyNode {
-//            spinnyNode.lineWidth = 2.5
-//
-//            spinnyNode.run(SKAction.repeatForever(SKAction.rotate(byAngle: CGFloat(Double.pi), duration: 1)))
-//            spinnyNode.run(SKAction.sequence([SKAction.wait(forDuration: 0.5),
-//                                              SKAction.fadeOut(withDuration: 0.5),
-//                                              SKAction.removeFromParent()]))
-//        }
         circleNode.fillColor = UIColor.red
         circleNode.glowWidth = 10
         self.addChild(circleNode)
         
-        //outsideArrow.zRotation
-        self.addChild(outsideArrow)
-        outsideArrow.run(SKAction.rotate(byAngle: 180.0, duration: 100), withKey: "rotateArrow")
+    
+        insideArrow = makeinsideArrow()
+        outsideArrow = makeoutsideArrow()
+        
+        outsideArrow.physicsBody?.isDynamic = false // Move this back to makeoutsideArrow()
+        insideArrow.run(SKAction.rotate(byAngle: 180.0, duration: 100), withKey: "rotateArrow")
+    }
+    
+    func makeoutsideArrow() -> SKSpriteNode {
+        let outsideArrowTexture = SKTexture(imageNamed: "clockPointer.png")
+        let outsideArrow = SKSpriteNode(texture: outsideArrowTexture)
+        
+        
+        outsideArrow.name = "outsideArrow"
+        
+        outsideArrow.anchorPoint = CGPoint(x: 0.5 , y: 0)
+        outsideArrow.position = CGPoint(x: 0, y: (circleNode.frame.height - (circleNode.frame.height / 2)) - 200)
+        outsideArrow.physicsBody = SKPhysicsBody(texture: outsideArrowTexture, size: outsideArrowTexture.size())
+        
+        addChild(outsideArrow)
+        return outsideArrow
+    }
+    
+    func makeinsideArrow() -> SKSpriteNode {
+        let insideArrowTexture = SKTexture(imageNamed: "clockPointer.png")
+        let insideArrow = SKSpriteNode(texture: insideArrowTexture)
+        
+        
+        insideArrow.name = "insideArrow"
+        
+        insideArrow.anchorPoint = CGPoint(x: 0.5 , y: 0.5)
+        insideArrow.position = CGPoint(x: 0, y: 0)
+       //insideArrow.physicsBody = SKPhysicsBody(texture: insideArrowTexture, size: insideArrowTexture.size())
+        
+        circleNode.addChild(insideArrow)
+        return insideArrow
     }
     
 
@@ -87,7 +102,7 @@ class GameScene: SKScene {
 //        }
 //
 //        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
-        outsideArrow.removeAction(forKey: "rotateArrow")
+        insideArrow.removeAction(forKey: "rotateArrow")
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -107,3 +122,20 @@ class GameScene: SKScene {
         // Called before each frame is rendered
     }
 }
+
+//extension GameScene: SKPhysicsContactDelegate {
+//
+//    func didBegin(_ contact: SKPhysicsContact) {
+//        if contact.bodyA.node?.name == "coin" || contact.bodyB.node?.name == "coin" {
+//            if contact.bodyA.node == outsideArrow {
+//                contact.bodyB.node?.removeFromParent()
+//            } else {
+//                contact.bodyA.node?.removeFromParent()
+//            }
+//            run(sndCollect)
+//            score += 1
+//        } else if contact.bodyA.node?.name == "pillar" || contact.bodyB.node?.name == "pillar" {
+//            stopGame()
+//        }
+//    }
+//}
