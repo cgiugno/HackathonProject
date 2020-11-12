@@ -44,6 +44,7 @@ class GameScene: SKScene {
         
         //outsideArrow.zRotation
         self.addChild(outsideArrow)
+        outsideArrow.run(SKAction.rotate(byAngle: 180.0, duration: 100), withKey: "rotateArrow")
     }
     
 
@@ -81,11 +82,12 @@ class GameScene: SKScene {
 //    }
     // Needed -------
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let label = self.label {
-            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
-        }
-        
-        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+//        if let label = self.label {
+//            label.run(SKAction.init(named: "Pulse")!, withKey: "fadeInOut")
+//        }
+//
+//        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+        outsideArrow.removeAction(forKey: "rotateArrow")
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
