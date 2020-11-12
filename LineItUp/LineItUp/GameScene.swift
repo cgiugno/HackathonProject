@@ -22,6 +22,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rotate = SKAction()
     var inContact = false
 
+    var scoreLabel : SKLabelNode!
+    var score = 0 {
+        didSet {
+            print("Score: \(score)")
+            scoreLabel.text = "Score: \(score)"
+        }
+    }
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
@@ -39,6 +46,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(outsideArrow)
         circleNode.addChild(insideArrow)
         
+        makeScoreLabel()
     }
     
     func makeoutsideArrow() -> SKSpriteNode {
@@ -92,6 +100,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(circleNode)
         circleNode.addChild(insideArrow)
         addChild(outsideArrow)
+        makeScoreLabel()
     }
 
     // Needed -------
@@ -113,7 +122,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
     }
-    
+    func makeScoreLabel() {
+        scoreLabel = SKLabelNode()
+        print(self.frame.width)
+        print(self.frame.height)
+        scoreLabel.position = CGPoint(x: -150, y: -630)
+        scoreLabel.fontName = "AppleColorEmoji"
+        scoreLabel.fontColor = UIColor.systemRed
+        scoreLabel.fontSize = 80
+        scoreLabel.zPosition = 3
+        scoreLabel.text = "Score: \(score)"
+        addChild(scoreLabel)
+    }
 
     // Needed ------
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
