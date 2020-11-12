@@ -41,10 +41,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func makeoutsideArrow() -> SKSpriteNode {
         let outsideArrowTexture = SKTexture(imageNamed: "clockPointer.png")
         outsideArrow = SKSpriteNode(texture: outsideArrowTexture)
-
-
+        
         outsideArrow.name = "outsideArrow"
-
         outsideArrow.anchorPoint = CGPoint(x: 0.5 , y: 0)
         outsideArrow.position = CGPoint(x: 0, y: (circleNode.frame.height - (circleNode.frame.height / 2)) - 200)
         outsideArrow.physicsBody = SKPhysicsBody(texture: outsideArrowTexture, size: outsideArrowTexture.size())
