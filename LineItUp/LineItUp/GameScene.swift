@@ -9,6 +9,8 @@
 import SpriteKit
 import GameplayKit
 
+
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private var label : SKLabelNode?
@@ -19,6 +21,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var outsideArrow = SKSpriteNode()
     var rotate = SKAction()
     var inContact = false
+
     
     override func didMove(to view: SKView) {
         physicsWorld.contactDelegate = self
@@ -100,8 +103,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
         insideArrow.removeAllActions()
         if insideArrow.intersects(outsideArrow) {
-            print("LEVEL PASSED")
-        } else {
+            score+=1
+            print("Score:", score)
+            restartGameArrows()
+        }else{
+            score=0
+            restartGameArrows()
             print("---------- GAME OVER --------------")
             
         }
