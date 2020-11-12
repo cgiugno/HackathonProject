@@ -44,7 +44,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         outsideArrow.name = "outsideArrow"
         outsideArrow.anchorPoint = CGPoint(x: 0.5 , y: 0)
-        outsideArrow.position = CGPoint(x: 0, y: (circleNode.frame.height - (circleNode.frame.height / 2)) - 200)
+        outsideArrow.position = CGPoint(x: 0, y: (circleNode.frame.height - (circleNode.frame.height / 2)) - 130)
         outsideArrow.physicsBody = SKPhysicsBody(texture: outsideArrowTexture, size: outsideArrowTexture.size())
         outsideArrow.physicsBody?.contactTestBitMask = outsideArrow.physicsBody!.collisionBitMask
         outsideArrow.physicsBody?.isDynamic = false
@@ -80,6 +80,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //addChild(insideArrow)
         return insideArrow
     }
+    
+    func restartGameArrows(){
+        self.removeAllChildren()
+        circleNode.removeAllChildren()
+        insideArrow=makeinsideArrow()
+        outsideArrow=makeoutsideArrow()
+        addChild(circleNode)
+        circleNode.addChild(insideArrow)
+        addChild(outsideArrow)
+    }
 
     // Needed -------
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -110,6 +120,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
       
 //        print("Inside arrow = ", insideArrow.zRotation)
 //        print("Outside arrow = ", outsideArrow.zRotation)
+        
+        if insideArrow.intersects(outsideArrow) {
+                   print("LEVEL PASSED")
+        }else{
+            print("no contact")
+        }
         
     }
     
