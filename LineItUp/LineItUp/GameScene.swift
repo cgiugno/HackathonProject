@@ -9,73 +9,78 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
-    let circleNode = SKShapeNode(circleOfRadius: 350)
+    var circleNode = SKShapeNode(circleOfRadius: 350)
     
     var insideArrow = SKSpriteNode()
     var outsideArrow = SKSpriteNode()
+    var rotate = SKAction()
+    var inContact = false
     
     override func didMove(to view: SKView) {
-
+        physicsWorld.contactDelegate = self
         circleNode.fillColor = UIColor.red
         circleNode.glowWidth = 10
         self.addChild(circleNode)
         
-    
+        
         insideArrow = makeinsideArrow()
         outsideArrow = makeoutsideArrow()
         
         outsideArrow.physicsBody?.isDynamic = false // Move this back to makeoutsideArrow()
-        insideArrow.run(SKAction.rotate(byAngle: 180.0, duration: 100), withKey: "rotateArrow")
+        insideArrow.physicsBody?.isDynamic = false
+        
+        addChild(outsideArrow)
+        circleNode.addChild(insideArrow)
+        
     }
     
     func makeoutsideArrow() -> SKSpriteNode {
         let outsideArrowTexture = SKTexture(imageNamed: "clockPointer.png")
-        let outsideArrow = SKSpriteNode(texture: outsideArrowTexture)
-        
-        
+        outsideArrow = SKSpriteNode(texture: outsideArrowTexture)
+
+
         outsideArrow.name = "outsideArrow"
-        
+
         outsideArrow.anchorPoint = CGPoint(x: 0.5 , y: 0)
         outsideArrow.position = CGPoint(x: 0, y: (circleNode.frame.height - (circleNode.frame.height / 2)) - 200)
         outsideArrow.physicsBody = SKPhysicsBody(texture: outsideArrowTexture, size: outsideArrowTexture.size())
-        
-        addChild(outsideArrow)
+        outsideArrow.physicsBody?.contactTestBitMask = outsideArrow.physicsBody!.collisionBitMask
+        outsideArrow.physicsBody?.isDynamic = false
+        outsideArrow.physicsBody?.allowsRotation = false
+        outsideArrow.physicsBody?.affectedByGravity = false
+        outsideArrow.zPosition = 1
+        outsideArrow.physicsBody?.restitution = 0.75
+        //addChild(outsideArrow)
         return outsideArrow
     }
     
+    
     func makeinsideArrow() -> SKSpriteNode {
         let insideArrowTexture = SKTexture(imageNamed: "clockPointer.png")
-        let insideArrow = SKSpriteNode(texture: insideArrowTexture)
+        insideArrow = SKSpriteNode(texture: insideArrowTexture)
         
         
         insideArrow.name = "insideArrow"
         
         insideArrow.anchorPoint = CGPoint(x: 0.5 , y: 0.5)
         insideArrow.position = CGPoint(x: 0, y: 0)
-       //insideArrow.physicsBody = SKPhysicsBody(texture: insideArrowTexture, size: insideArrowTexture.size())
+        insideArrow.physicsBody = SKPhysicsBody(texture: insideArrowTexture, size: insideArrowTexture.size())
+        insideArrow.physicsBody?.contactTestBitMask = insideArrow.physicsBody!.collisionBitMask
+        insideArrow.physicsBody?.isDynamic = false
+        insideArrow.physicsBody?.allowsRotation = true
+        insideArrow.physicsBody?.affectedByGravity = false
         
-        circleNode.addChild(insideArrow)
+        insideArrow.zPosition = 1
+        rotate = SKAction.rotate(toAngle: 90.0, duration: 100)
+        let forever = SKAction.repeatForever(rotate)
+        insideArrow.run(forever)
+        //circleNode.addChild(insideArrow)
+        //addChild(insideArrow)
         return insideArrow
-    }
-    
-
-
-    func touchDown(atPoint pos : CGPoint) {
-//        if let n = self.spinnyNode?.copy() as! SKShapeNode? {
-//            n.position = pos
-//            n.strokeColor = SKColor.green
-//            self.addChild(n)
-//        }
-        
-//        if let n = self.squareNode.copy() as! SKShapeNode? {
-//            n.position = pos
-//            n.strokeColor = SKColor.red
-//            self.addChild(n)
-//        }
     }
 
     // Needed -------
@@ -85,39 +90,56 @@ class GameScene: SKScene {
 //        }
 //
 //        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
-        insideArrow.removeAction(forKey: "rotateArrow")
+        insideArrow.removeAllActions()
+        if insideArrow.intersects(outsideArrow) {
+            print("LEVEL PASSED")
+        } else {
+            print("---------- GAME OVER --------------")
+            
+        }
     }
     
 
     // Needed ------
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         //for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-        print("----------------- touch ended --------------")
+        print("----------------- TOUCH ENDED --------------")
+        
     }
-    
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //for t in touches { self.touchUp(atPoint: t.location(in: self)) }
-    }
-    
     
     override func update(_ currentTime: TimeInterval) {
         // Called before each frame is rendered
+      
+//        print("Inside arrow = ", insideArrow.zRotation)
+//        print("Outside arrow = ", outsideArrow.zRotation)
+        
     }
-}
-
-extension GameScene: SKPhysicsContactDelegate {
-
-    func didBegin(_ contact: SKPhysicsContact) {
-        if contact.bodyA.node?.name == "coin" || contact.bodyB.node?.name == "coin" {
-            if contact.bodyA.node == outsideArrow {
-                contact.bodyB.node?.removeFromParent()
-            } else {
-                contact.bodyA.node?.removeFromParent()
-            }
-            //run(sndCollect)          // Add ding soundtrack
-            score += 1
-        } else if contact.bodyA.node?.name == "pillar" || contact.bodyB.node?.name == "pillar" {
-            stopGame()
+    
+    func collisionBetween(outsideArrow: SKNode, object: SKNode) {
+        if object.name == "outsideArrow" {
+            print("DONEEEEEEEEE OUTSIDE ARROW");
+        } else if object.name == "insideArrow" {
+            print("DONEEEEEEEEEE INSIDE ARROW")
         }
     }
+    
+//    func didBegin(_ contact: SKPhysicsContact) {
+//        if contact.bodyA.node?.name == "insideArrow" || contact.bodyA.node?.name == "outsideArrow" {
+//            //print("------------   TOUCHED -----------")
+//            collisionBetween(outsideArrow: contact.bodyA.node!, object: contact.bodyB.node!)
+//        } else {
+//            print("NO CONTACTT")
+//        }
+//
+//    }
+    
+    
+    
 }
+
+//extension GameScene: SKPhysicsContactDelegate {
+//
+//    func didBegin(_ contact: SKPhysicsContact) {
+//        print("------------   TOUCHED -----------")
+//    }
+//}
